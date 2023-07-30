@@ -1,0 +1,45 @@
+apiVersion: v1
+entries:
+  open-match:
+  - apiVersion: v2
+    appVersion: 0.0.0-dev
+    created: "2023-07-30T13:26:28.308128496-07:00"
+    dependencies:
+    - condition: open-match-core.redis.enabled
+      name: redis
+      repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+      version: 16.3.1
+    - condition: open-match-telemetry.enabled
+      name: open-match-telemetry
+      repository: file://./subcharts/open-match-telemetry
+      version: 0.0.0-dev
+    - condition: open-match-customize.enabled
+      name: open-match-customize
+      repository: file://./subcharts/open-match-customize
+      version: 0.0.0-dev
+    - condition: open-match-scale.enabled
+      name: open-match-scale
+      repository: file://./subcharts/open-match-scale
+      version: 0.0.0-dev
+    description: Flexible, extensible, and scalable video game matchmaking.
+    digest: 8feb6def8e1792d92f0612cfdee21d0cd6ee29e8087af8a62c10e67f9e39923c
+    home: https://open-match.dev
+    icon: https://open-match.dev/site/images/logo.svg
+    keywords:
+    - kubernetes
+    - game-development
+    - multiplayer
+    - matchmaking
+    - go
+    - golang
+    maintainers:
+    - email: open-match-discuss@googlegroups.com
+      name: open-match
+      url: https://groups.google.com/forum/#!forum/open-match-discuss
+    name: open-match
+    sources:
+    - https://github.com/googleforgames/open-match
+    urls:
+    - open-match-1.7.1.tgz
+    version: 1.7.1
+generated: "2023-07-30T13:26:28.283254446-07:00"

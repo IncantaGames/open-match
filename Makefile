@@ -53,7 +53,7 @@
 # If you want information on how to edit this file checkout,
 # http://makefiletutorial.com/
 
-BASE_VERSION = 0.0.0-dev
+BASE_VERSION = 1.7.1
 SHORT_SHA = $(shell git rev-parse --short=7 HEAD | tr -d [:punct:])
 BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD | tr -d [:punct:])
 VERSION = $(BASE_VERSION)-$(SHORT_SHA)
@@ -88,7 +88,7 @@ GCP_PROJECT_ID ?=
 GCP_PROJECT_FLAG = --project=$(GCP_PROJECT_ID)
 OPEN_MATCH_BUILD_PROJECT_ID = open-match-build
 OPEN_MATCH_PUBLIC_IMAGES_PROJECT_ID = open-match-public-images
-REGISTRY ?= gcr.io/$(GCP_PROJECT_ID)
+REGISTRY ?= ghcr.io/incantagames
 TAG = $(VERSION)
 ALTERNATE_TAG = dev
 VERSIONED_CANARY_TAG = $(BASE_VERSION)-canary
@@ -649,7 +649,7 @@ create-gke-cluster: build/toolchain/bin/kubectl$(EXE_EXTENSION) gcloud
 		--image-type cos_containerd \
 		--tags open-match \
 		--workload-pool $(GCP_PROJECT_ID).svc.id.goog
-	
+
 
 delete-gke-cluster: gcloud
 	-$(GCLOUD) $(GCP_PROJECT_FLAG) container clusters delete $(GKE_CLUSTER_NAME) $(GCP_LOCATION_FLAG) $(GCLOUD_EXTRA_FLAGS)
@@ -674,14 +674,14 @@ all-protos: $(ALL_PROTOS)
 
 # The proto generator really wants to be run from the $GOPATH root, and doesn't
 # support methods for directing it to the correct location that's not the proto
-# file's location. 
+# file's location.
 # So, instead, put it in a tempororary directory, then move it out.
 pkg/pb/%.pb.go: api/%.proto third_party/ build/toolchain/bin/protoc$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-go$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-go-grpc$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-grpc-gateway$(EXE_EXTENSION)
 	mkdir -p $(REPOSITORY_ROOT)/build/prototmp $(REPOSITORY_ROOT)/pkg/pb
 	$(PROTOC)  $< \
 		-I $(REPOSITORY_ROOT) -I $(PROTOC_INCLUDES) \
 		--go_out=$(REPOSITORY_ROOT)/build/prototmp \
-		--go-grpc_out=require_unimplemented_servers=false:$(REPOSITORY_ROOT)/build/prototmp 
+		--go-grpc_out=require_unimplemented_servers=false:$(REPOSITORY_ROOT)/build/prototmp
 	mv $(REPOSITORY_ROOT)/build/prototmp/open-match.dev/open-match/pkg/pb/* $(REPOSITORY_ROOT)/pkg/pb/
 
 internal/ipb/%.pb.go: internal/api/%.proto third_party/ build/toolchain/bin/protoc$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-go$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-go-grpc$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-grpc-gateway$(EXE_EXTENSION)
@@ -689,7 +689,7 @@ internal/ipb/%.pb.go: internal/api/%.proto third_party/ build/toolchain/bin/prot
 	$(PROTOC)  $< \
 		-I $(REPOSITORY_ROOT) -I $(PROTOC_INCLUDES) \
 		--go_out=$(REPOSITORY_ROOT)/build/prototmp \
-		--go-grpc_out=require_unimplemented_servers=false:$(REPOSITORY_ROOT)/build/prototmp 
+		--go-grpc_out=require_unimplemented_servers=false:$(REPOSITORY_ROOT)/build/prototmp
 	mv $(REPOSITORY_ROOT)/build/prototmp/open-match.dev/open-match/internal/ipb/* $(REPOSITORY_ROOT)/internal/ipb/
 
 pkg/pb/%.pb.gw.go: api/%.proto third_party/ build/toolchain/bin/protoc$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-go$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-go-grpc$(EXE_EXTENSION) build/toolchain/bin/protoc-gen-grpc-gateway$(EXE_EXTENSION)
@@ -1035,7 +1035,7 @@ define tutorial_folder
 	$(foreach dir, $(wildcard $(1)/*/.), $(call tutorial_folder, $(dir)))
 endef
 
-tutorial-deps: 
+tutorial-deps:
 	$(call tutorial_folder,./tutorials)
 
 
